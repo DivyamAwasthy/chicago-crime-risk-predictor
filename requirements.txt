@@ -1,5 +1,5 @@
 pandas
 numpy
-scikit-learn
-xgboost
-imbalanced-learn
+scikit-learn==1.6.1
+xgboost==3.2.0
+imbalanced-learn==0.14.1
