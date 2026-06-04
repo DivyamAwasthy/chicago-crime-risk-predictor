@@ -1,10 +1,7 @@
-
-import streamlit as st
-import pandas as pd
-import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
+from imblearn.pipeline import Pipeline       
+from imblearn.over_sampling import SMOTE     
 from xgboost import XGBClassifier
 
 # ============================================================
@@ -13,29 +10,23 @@ from xgboost import XGBClassifier
 @st.cache_resource
 def train_model():
     agg = pd.read_csv('crime_risk_aggregated.csv')
-    
     features = ['lat_bin', 'lon_bin', 'hour', 'day_of_week', 'is_weekend']
     X = agg[features]
     y = agg['risk_level']
-    
+
     le = LabelEncoder()
     y_encoded = le.fit_transform(y)
-    
-    preprocessor = ColumnTransformer([
-        ('num', StandardScaler(), features)
-    ])
-    
-    pipeline = Pipeline([
+
+    preprocessor = ColumnTransformer([('num', StandardScaler(), features)])
+
+    pipeline = Pipeline([                      # imblearn Pipeline now
         ('preprocessor', preprocessor),
+        ('smote', SMOTE(random_state=42)),     # SMOTE step added
         ('classifier', XGBClassifier(
-            n_estimators=200,
-            max_depth=6,
-            learning_rate=0.1,
-            random_state=42,
-            eval_metric='mlogloss'
+            n_estimators=200, max_depth=6, learning_rate=0.1,
+            random_state=42, eval_metric='mlogloss'
         ))
     ])
-    
     pipeline.fit(X, y_encoded)
     return pipeline, le, features
 
