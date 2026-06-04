@@ -1,7 +1,10 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.compose import ColumnTransformer
-from imblearn.pipeline import Pipeline       
-from imblearn.over_sampling import SMOTE     
+from imblearn.pipeline import Pipeline
+from imblearn.over_sampling import SMOTE
 from xgboost import XGBClassifier
 
 # ============================================================
